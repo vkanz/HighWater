@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "ru.systemt.highwater.app-release-57:/xml_backup_rules.xml.flat",
+        "source": "ru.systemt.highwater.app-main-58:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "ru.systemt.highwater.app-release-57:/drawable_ic_stat_highwater.xml.flat",
+        "source": "ru.systemt.highwater.app-main-58:/drawable/ic_stat_highwater.xml"
+    },
+    {
+        "merged": "ru.systemt.highwater.app-release-57:/mipmap-anydpi_ic_launcher.xml.flat",
+        "source": "ru.systemt.highwater.app-main-58:/mipmap-anydpi/ic_launcher.xml"
+    },
+    {
+        "merged": "ru.systemt.highwater.app-release-57:/xml_data_extraction_rules.xml.flat",
+        "source": "ru.systemt.highwater.app-main-58:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "ru.systemt.highwater.app-release-57:/drawable_ic_launcher_monochrome.xml.flat",
+        "source": "ru.systemt.highwater.app-main-58:/drawable/ic_launcher_monochrome.xml"
+    },
+    {
+        "merged": "ru.systemt.highwater.app-release-57:/mipmap-anydpi_ic_launcher_round.xml.flat",
+        "source": "ru.systemt.highwater.app-main-58:/mipmap-anydpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "ru.systemt.highwater.app-release-57:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "ru.systemt.highwater.app-main-58:/drawable/ic_launcher_foreground.xml"
+    }
+]

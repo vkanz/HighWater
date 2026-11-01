@@ -1,0 +1,16 @@
+# Автоматическая конвертация окончаний строк
+* text=auto
+
+# Явно указать текстовые файлы
+*.java text
+*.kt text
+*.xml text
+*.gradle text
+*.properties text
+
+# Бинарные файлы не конвертировать
+*.png binary
+*.jpg binary
+*.gif binary
+*.jar binary
+*.aar binary

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.7.3" type="partial_results">
+    <map id="NotificationPermission">
+        <entry
+            name="source"
+            boolean="true"/>
+    </map>
+    <map id="UnsafeImplicitIntentLaunch">
+            <map id="actionsSent">
+                    <map id="android.settings.APPLICATION_DETAILS_SETTINGS (used to start an activity)">
+                        <location id="0"
+                            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/ru/systemt/highwater/ui/permissions/BlePermissionGate.kt"
+                            line="147"
+                            column="34"
+                            startOffset="5770"
+                            endLine="150"
+                            endColumn="22"
+                            endOffset="5946"/>
+                    </map>
+            </map>
+    </map>
+    <map id="UnsafeIntentLaunch">
+            <map id="unprotected">
+                <entry
+                    name="ru.systemt.highwater.MainActivity"
+                    boolean="true"/>
+            </map>
+    </map>
+    <map id="UnusedResources">
+        <entry
+            name="model"
+            string="color[ic_launcher_background(U),window_background(U)],drawable[ic_launcher_foreground(U),ic_launcher_monochrome(U),ic_stat_highwater(U)],mipmap[ic_launcher(U),ic_launcher_round(U)],string[app_name(U),main_title(U),main_subtitle(U),main_select_device(U),main_start_measurement(U),main_saved_device(U),main_no_saved_device(U),back(U),retry_scan(U),select_another_device(U),device_unnamed(U),device_rssi(U),device_selection_title(U),device_selection_scanning(U),device_selection_scan_finished(U),device_selection_empty(U),device_selection_rescan(U),device_selection_error(U),measurement_title(U),measurement_searching(U),measurement_connecting(U),measurement_failed_title(U),measurement_error(U),measurement_info_name(U),measurement_info_address(U),measurement_info_rssi(U),measurement_info_state(U),measurement_state_connected(U),measurement_placeholder_title(U),measurement_placeholder_body(U),permission_title(U),permission_body(U),permission_grant(U),permission_open_settings(U),notification_channel_name(U),notification_channel_description(U),notification_title(U),notification_status_scanning(U),notification_status_searching(U),notification_status_connecting(U),notification_status_connected(U),notification_status_idle(U)],style[Theme_HighWater(U)],xml[data_extraction_rules(U),backup_rules(U)];5^0^2^3,6^0^2^3,31^1;;;"/>
+    </map>
+
+</incidents>

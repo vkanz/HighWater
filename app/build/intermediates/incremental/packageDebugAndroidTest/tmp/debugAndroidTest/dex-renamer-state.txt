@@ -1,0 +1,13 @@
+#Sat Oct 31 13:34:04 MSK 2026
+path.3=8/classes.dex
+path.2=5/classes.dex
+path.1=0/classes.dex
+path.0=classes.dex
+base.3=H\:\\AndroidProjects\\HighWater\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\8\\classes.dex
+base.2=H\:\\AndroidProjects\\HighWater\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\5\\classes.dex
+base.1=H\:\\AndroidProjects\\HighWater\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
+base.0=H\:\\AndroidProjects\\HighWater\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
+renamed.3=classes4.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex

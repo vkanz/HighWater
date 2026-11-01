@@ -1,0 +1,24 @@
+# Файлы сборки
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+.kotlin
+
+# Настройки IDE (Android Studio / IntelliJ)
+/.idea/
+!/.idea/gradle.xml
+!/.idea/vcs.xml
+!/.idea/runConfigurations/
+
+# Особые файлы
+.DS_Store
+*.apk
+*.ap_
+*.aab
