@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name="ru.systemt.highwater.MainScreenTest" tests="1" failures="0" errors="0" skipped="0" time="877.821" timestamp="2026-10-31T11:53:43" hostname="localhost">
-  <properties>
-    <property name="device" value="2109119DG - 14" />
-    <property name="flavor" value="" />
-    <property name="project" value=":app" />
-  </properties>
-  <testcase name="mainScreenShowsPrimaryActions" classname="ru.systemt.highwater.MainScreenTest" time="-1.793446745927E9" />
-</testsuite>

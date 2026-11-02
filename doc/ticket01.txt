@@ -1,0 +1,32 @@
+Доработать фильтрацию устройств при сканировании в методе startScanInternal() (файл BleManager.kt).
+Фильтрацию следует сделать по образцу прототипа, написанного на Delphi:
+В модуле
+"C:\_Projects\Shturman.LifePick\Shturman\ShturmanLifePeak\LifePeakApp\Pages\Pages.SelectDevice.pas" в обработчике событий TPageSelectDevice.BluetoothLEDiscoverLEDevice фильтрация выполняется метоом IsAMD().
+В этом же методе IsAMD из данных рекламного пакета формируется имя устройства.
+Это имя устройства надо отображать в списке найденных устройств.
+-----------------------------------------------------------------------------------
+Что изменено
+data/ble/AmdAdvertisement.kt (новый) — аналог IsAMD():
+
+разбирает сырые AD-структуры [длина][тип][данные…] из ScanRecord.bytes;
+требует ровно 4 различных AD-типа;
+требует AD-тип 0x53 (серийный номер ASCII) и Shortened Local Name 0x08 длиной 12 байт;
+имя = "S" + ASCII(0x53) (обрезка по первому нулю, как BytesToASCII);
+дубликаты AD-типов схлопываются в словарь — как AdvertisedData в прототипе.
+data/ble/BleManager.kt:
+
+startScanInternal() запускает scanner.startScan(emptyList(), …) — без ScanFilter;
+фильтрация в handleScanResult(), как в BluetoothLEDiscoverLEDevice;
+в списке отображается имя из рекламного пакета;
+в режиме SEARCH имя тоже берётся из AD-пакета, с fallback на BluetoothDevice.name; поиск по MAC сохранён.
+data/ble/BleConfig.kt — константы фильтра: AMD_SERIAL_AD_TYPE, SHORTENED_LOCAL_NAME_AD_TYPE, AMD_AD_STRUCTURE_COUNT, AMD_SHORTENED_NAME_LENGTH, AMD_NAME_PREFIX. Старые COMPANY_ID / MANUFACTURER_DATA_* удалены.
+
+Тесты: AmdAdvertisementTest (7 тестов) + обновлённый BleConfigTest. Всего 11 тестов, 0 падений.
+
+Документация: §3.2 doc/Specifications.md и README.md описывают AMD-фильтрацию вместо setManufacturerData.
+
+Проверка
+testDebugUnitTest, lintDebug, assembleDebug, assembleRelease, assembleDebugAndroidTest — успешно.
+На Mi A1 с реальным устройством: в списке появилось STK01-001 (MAC 00:80:E1:26:7C:AE) — имя сформировано из пакета (S + TK01-001), устройство выбрано, MAC сохранён, соединение установлено, экран «Подключено» показывает это имя, RSSI −40 дБм. Падений в logcat нет.
+На заметку
+Если прошивка устройства изменит формат рекламы, править нужно только константы в BleConfig.kt — логика разбора останется прежней. Проект не под git, поэтому изменения не закоммичены.

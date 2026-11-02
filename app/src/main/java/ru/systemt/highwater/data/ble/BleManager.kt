@@ -9,7 +9,6 @@ import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
@@ -76,14 +75,6 @@ class BleManager @Inject constructor(
 
     private val scanSettings = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-        .build()
-
-    private val scanFilter: ScanFilter = ScanFilter.Builder()
-        .setManufacturerData(
-            BleConfig.COMPANY_ID,
-            BleConfig.MANUFACTURER_DATA_PREFIX,
-            BleConfig.MANUFACTURER_DATA_MASK,
-        )
         .build()
 
     private val scanCallback = object : ScanCallback() {
@@ -250,8 +241,9 @@ class BleManager @Inject constructor(
 
         val startedAt = SystemClock.elapsedRealtime()
         try {
-            //scanner.startScan(listOf(scanFilter), scanSettings, scanCallback)
-            scanner.startScan(null, scanSettings, scanCallback)
+            // Фильтруем не на уровне контроллера, а в handleScanResult по AD-структурам
+            // пакета — как IsAMD() в Delphi-прототипе.
+            scanner.startScan(emptyList(), scanSettings, scanCallback)
         } catch (_: SecurityException) {
             fail("Нет разрешения на сканирование Bluetooth-устройств")
             return
@@ -328,26 +320,35 @@ class BleManager @Inject constructor(
             return
         }
 
-        val info = BleDeviceInfo(
-            name = safeDeviceName(device),
-            address = address,
-            rssi = result.rssi,
-        )
-
         when (scanMode) {
-            ScanMode.DEVICE_LIST -> _state.update { state ->
-                if (state.phase != BlePhase.SCANNING) {
-                    state
-                } else {
-                    val devices = (state.devices.filterNot { it.address == address } + info)
-                        .sortedByDescending { it.rssi }
-                    state.copy(devices = devices)
+            ScanMode.DEVICE_LIST -> {
+                // В список попадают только устройства, прошедшие аналог IsAMD().
+                val match = AmdAdvertisement.match(result.scanRecord?.bytes) ?: return
+                val info = BleDeviceInfo(
+                    name = match.name,
+                    address = address,
+                    rssi = result.rssi,
+                )
+                _state.update { state ->
+                    if (state.phase != BlePhase.SCANNING) {
+                        state
+                    } else {
+                        val devices = (state.devices.filterNot { it.address == address } + info)
+                            .sortedByDescending { it.rssi }
+                        state.copy(devices = devices)
+                    }
                 }
             }
 
             ScanMode.SEARCH -> {
                 if (!address.equals(targetAddress, ignoreCase = true)) return
                 stopScanInternal()
+                val amdName = AmdAdvertisement.match(result.scanRecord?.bytes)?.name
+                val info = BleDeviceInfo(
+                    name = amdName ?: safeDeviceName(device),
+                    address = address,
+                    rssi = result.rssi,
+                )
                 connectedDeviceInfo = info
                 _state.update {
                     it.copy(

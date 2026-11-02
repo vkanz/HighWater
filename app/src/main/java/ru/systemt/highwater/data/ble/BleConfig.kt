@@ -1,10 +1,12 @@
 package ru.systemt.highwater.data.ble
 
 /**
- * Настройки BLE-сканирования и фильтрации.
+ * Настройки BLE-сканирования и фильтрации АМД.
  *
- * Значения Company ID и первых байт manufacturer data зависят от конкретного
- * устройства. Замените их на данные из документации производителя.
+ * Фильтрация повторяет метод IsAMD() из Delphi-прототипа
+ * (Pages.SelectDevice.pas): разбирается рекламный пакет и проверяется
+ * набор AD-структур. Значения вынесены сюда, чтобы их можно было
+ * менять без правки логики.
  */
 object BleConfig {
     /** Длительность сканирования списка устройств. */
@@ -22,14 +24,20 @@ object BleConfig {
     /** Как часто обновлять прогресс сканирования. */
     const val PROGRESS_UPDATE_INTERVAL_MS = 100L
 
-    /** Company ID из advertising packet. По умолчанию — заглушка 0x1234. */
-    const val COMPANY_ID = 0x1234
+    /** AD-тип, в котором АМД передаёт серийный номер в ASCII. */
+    const val AMD_SERIAL_AD_TYPE = 0x53
 
-    /** Первые байты manufacturer data, по которым фильтруются устройства. */
-    val MANUFACTURER_DATA_PREFIX = byteArrayOf(0x48, 0x57) // "HW"
+    /** AD-тип Shortened Local Name. */
+    const val SHORTENED_LOCAL_NAME_AD_TYPE = 0x08
 
-    /** Маска для сравнения префикса manufacturer data. */
-    val MANUFACTURER_DATA_MASK = ByteArray(MANUFACTURER_DATA_PREFIX.size) { 0xFF.toByte() }
+    /** Ожидаемое количество различных AD-структур в пакете АМД. */
+    const val AMD_AD_STRUCTURE_COUNT = 4
+
+    /** Ожидаемая длина Shortened Local Name в пакете АМД. */
+    const val AMD_SHORTENED_NAME_LENGTH = 12
+
+    /** Префикс отображаемого имени: "S" + серийный номер. */
+    const val AMD_NAME_PREFIX = "S"
 
     /** Идентификатор foreground-уведомления. */
     const val NOTIFICATION_ID = 1001

@@ -1,24 +1,28 @@
-# Файлы сборки
-*.iml
-.gradle
-/local.properties
-/.idea
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Сгенерированные файлы и папки сборки (для всех модулей)
+**/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Файлы IDE (Android Studio / IntelliJ)
+.idea/
+# Если вам нужно сохранить специфичные настройки IDE, раскомментируйте нужные:
+# !.idea/gradle.xml
+# !.idea/vcs.xml
+# !.idea/runConfigurations/
+
+# Локальные конфигурационные файлы (содержат пути и пароли)
 local.properties
-.kotlin
+*.iml
 
-# Настройки IDE (Android Studio / IntelliJ)
-/.idea/
-!/.idea/gradle.xml
-!/.idea/vcs.xml
-!/.idea/runConfigurations/
-
-# Особые файлы
+# Файлы ОС
 .DS_Store
+Thumbs.db
+
+# Скомпилированные файлы приложений
 *.apk
 *.ap_
 *.aab
+
+# Логи
+*.log

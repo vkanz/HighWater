@@ -17,7 +17,8 @@ Android-приложение для работы с BLE-устройством �
 ```
 app/src/main/java/ru/systemt/highwater/
 ├── data/
-│   ├── ble/BleConfig.kt        # таймауты, фильтр manufacturer data, константы уведомления
+│   ├── ble/BleConfig.kt        # таймауты, константы фильтра АМД, константы уведомления
+│   ├── ble/AmdAdvertisement.kt # разбор AD-пакета (аналог IsAMD из Delphi-прототипа)
 │   ├── ble/BleManager.kt       # сканирование, фильтрация, GATT, StateFlow<BleState>
 │   └── preferences/            # DataStore + реализация репозитория MAC-адреса
 ├── domain/
@@ -53,25 +54,33 @@ app/src/main/java/ru/systemt/highwater/
 - **Подключение** — таймаут 15 с (`BleConfig.CONNECT_TIMEOUT_MS`). Если устройство
   не отвечает на `connectGatt`, сессия переходит в `FAILED` с сообщением о таймауте,
   а не зависает в состоянии «Подключение…».
-- **Фильтр** — `ScanFilter.Builder().setManufacturerData(companyId, prefix, mask)`.
+- **Фильтрация АМД** — как в Delphi-прототипе (`Pages.SelectDevice.pas`, `IsAMD`):
+  рекламный пакет разбирается на AD-структуры (`AmdAdvertisement`), устройство
+  попадает в список, если в пакете ровно 4 различных AD-типа, есть AD-тип `0x53`
+  с серийным номером и Shortened Local Name (`0x08`) длиной 12 байт. Имя в списке —
+  `S` + серийный номер из пакета. `ScanFilter` не используется: фильтрация идёт
+  в `BleManager.handleScanResult`, как в прототипе.
 - **MAC-адрес** сохраняется в DataStore и переживает перезапуск приложения.
 - **Разрешения.** Android 12+: `BLUETOOTH_SCAN`, `BLUETOOTH_CONNECT`;
   Android 11 и ниже: `ACCESS_FINE_LOCATION` + `ACCESS_COARSE_LOCATION`
   (`maxSdkVersion=30`). На Android 13+ дополнительно запрашивается
   `POST_NOTIFICATIONS` для уведомления сервиса.
 
-## Настройка под реальное устройство
+## Фильтр АМД
 
-В `data/ble/BleConfig.kt` заданы заглушки:
+Параметры фильтра вынесены в `data/ble/BleConfig.kt`:
 
 ```kotlin
-const val COMPANY_ID = 0x1234                  // ← Company ID производителя
-val MANUFACTURER_DATA_PREFIX = byteArrayOf(0x48, 0x57)  // ← первые байты данных ("HW")
-val MANUFACTURER_DATA_MASK = ByteArray(2) { 0xFF.toByte() }
+const val AMD_SERIAL_AD_TYPE = 0x53          // AD-тип с серийным номером (ASCII)
+const val SHORTENED_LOCAL_NAME_AD_TYPE = 0x08
+const val AMD_AD_STRUCTURE_COUNT = 4         // различных AD-типов в пакете
+const val AMD_SHORTENED_NAME_LENGTH = 12     // длина Shortened Local Name
+const val AMD_NAME_PREFIX = "S"              // префикс отображаемого имени
 ```
 
-Замените их на значения из документации устройства, иначе список сканирования
-останется пустым.
+Логика разбора пакета — `data/ble/AmdAdvertisement.kt`, покрыта unit-тестами
+`AmdAdvertisementTest`. Если прошивка устройства изменит формат рекламы,
+достаточно поправить эти константы.
 
 ## Сборка
 
@@ -108,6 +117,8 @@ adb shell am start -n ru.systemt.highwater/.MainActivity
 - запуск приложения и главный экран;
 - запрос разрешений (на API 30 — `ACCESS_FINE_LOCATION` + `ACCESS_COARSE_LOCATION`);
 - сканирование списка устройств с прогрессом и foreground-уведомлением;
+- фильтрация АМД по AD-структурам: в список попадают только устройства, прошедшие
+  аналог `IsAMD()`, имя берётся из серийного номера в рекламном пакете;
 - выбор устройства, сохранение MAC в DataStore;
 - поиск, подключение и экран «Подключено» (имя, MAC, RSSI, состояние);
 - сохранение соединения при сворачивании приложения и мгновенное восстановление UI;
@@ -120,4 +131,4 @@ adb shell am start -n ru.systemt.highwater/.MainActivity
   `:app:lintDebug`, `:app:assembleRelease` — успешно.
 - Lint: 0 ошибок; остаются только информационные `GradleDependency`
   (доступны более новые версии библиотек).
-- Unit-тесты: `BleConfigTest`, `BleStateTest` — 4 теста, 0 падений.
+- Unit-тесты: `BleConfigTest`, `BleStateTest`, `AmdAdvertisementTest` — 11 тестов, 0 падений.

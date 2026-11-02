@@ -1,7 +1,6 @@
 package ru.systemt.highwater.data.ble
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class BleConfigTest {
@@ -14,12 +13,11 @@ class BleConfigTest {
     }
 
     @Test
-    fun `manufacturer filter is well formed`() {
-        assertTrue(BleConfig.MANUFACTURER_DATA_PREFIX.isNotEmpty())
-        assertEquals(
-            BleConfig.MANUFACTURER_DATA_PREFIX.size,
-            BleConfig.MANUFACTURER_DATA_MASK.size,
-        )
-        assertTrue(BleConfig.MANUFACTURER_DATA_MASK.all { it == 0xFF.toByte() })
+    fun `amd filter matches the delphi prototype`() {
+        assertEquals(0x53, BleConfig.AMD_SERIAL_AD_TYPE)
+        assertEquals(0x08, BleConfig.SHORTENED_LOCAL_NAME_AD_TYPE)
+        assertEquals(4, BleConfig.AMD_AD_STRUCTURE_COUNT)
+        assertEquals(12, BleConfig.AMD_SHORTENED_NAME_LENGTH)
+        assertEquals("S", BleConfig.AMD_NAME_PREFIX)
     }
 }
